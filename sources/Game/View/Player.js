@@ -19,6 +19,7 @@ export default class Player
 
         this.setGroup()
         this.setHelper()
+        this.setJumpEffects()
         this.setDebug()
     }
 
@@ -53,6 +54,35 @@ export default class Player
         // this.group.add(this.axisHelper)
     }
 
+    setJumpEffects()
+    {
+        // Thêm hiệu ứng cho phần nhảy
+        this.jumpScale = {
+            min: 0.9,
+            max: 1.15
+        }
+        
+        // Tạo hiệu ứng bụi khi hạ cánh
+        this.dustGeometry = new THREE.CircleGeometry(1, 12)
+        this.dustGeometry.rotateX(-Math.PI / 2)
+        
+        this.dustMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0,
+            blending: THREE.AdditiveBlending
+        })
+        
+        this.dustEffect = new THREE.Mesh(this.dustGeometry, this.dustMaterial)
+        this.dustEffect.position.y = 0.05
+        this.dustEffect.scale.set(0, 0, 0)
+        this.group.add(this.dustEffect)
+        
+        this.isShowingDust = false
+        this.dustTime = 0
+        this.dustDuration = 0.6
+    }
+
     setDebug()
     {
         if(!this.debug.active)
@@ -79,5 +109,52 @@ export default class Player
         // Helper
         this.helper.rotation.y = playerState.rotation
         this.helper.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
+        
+        // Hiệu ứng nhảy
+        if(playerState.isJumping)
+        {
+            // Scaling animation khi nhảy
+            const jumpProgress = playerState.jumpTime / playerState.jumpDuration
+            const jumpScaleValue = this.jumpScale.min + Math.sin(jumpProgress * Math.PI) * (this.jumpScale.max - this.jumpScale.min)
+            
+            // Kéo dài khi bắt đầu nhảy, nén lại khi hạ cánh
+            this.helper.scale.y = 2 - jumpScaleValue
+            this.helper.scale.x = jumpScaleValue
+            this.helper.scale.z = jumpScaleValue
+            
+            // Thiết lập hiệu ứng bụi khi kết thúc nhảy
+            if(jumpProgress > 0.8 && !this.isShowingDust)
+            {
+                this.isShowingDust = true
+            }
+        }
+        else
+        {
+            // Về kích thước bình thường khi không nhảy
+            this.helper.scale.set(1, 1, 1)
+            
+            // Hiển thị hiệu ứng bụi khi hạ cánh
+            if(this.isShowingDust)
+            {
+                this.dustTime += this.state.time.delta
+                
+                if(this.dustTime < this.dustDuration)
+                {
+                    const progress = this.dustTime / this.dustDuration
+                    const size = progress * 2
+                    const opacity = Math.sin(progress * Math.PI) * 0.5
+                    
+                    this.dustEffect.scale.set(size, size, size)
+                    this.dustMaterial.opacity = opacity
+                }
+                else
+                {
+                    this.isShowingDust = false
+                    this.dustTime = 0
+                    this.dustEffect.scale.set(0, 0, 0)
+                    this.dustMaterial.opacity = 0
+                }
+            }
+        }
     }
 }

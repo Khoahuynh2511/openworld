@@ -3,6 +3,7 @@ import { vec3 } from 'gl-matrix'
 import Game from '@/Game.js'
 import State from '@/State/State.js'
 import Camera from './Camera.js'
+import SoundManager from '@/View/SoundManager.js'
 
 export default class Player
 {
@@ -18,12 +19,36 @@ export default class Player
         this.inputBoostSpeed = 30
         this.speed = 0
 
+        // Thêm các tham số cho chức năng nhảy
+        this.jumpHeight = 5
+        this.jumpDuration = 0.6
+        this.isJumping = false
+        this.jumpTime = 0
+        this.startJumpHeight = 0
+        this.wasJumping = false
+
         this.position = {}
         this.position.current = vec3.fromValues(10, 0, 1)
         this.position.previous = vec3.clone(this.position.current)
         this.position.delta = vec3.create()
 
         this.camera = new Camera(this)
+        
+        // Lắng nghe sự kiện phím nhảy
+        this.controls.events.on('jumpDown', () => {
+            this.jump()
+        })
+    }
+
+    jump()
+    {
+        // Chỉ nhảy khi người chơi đang đứng trên mặt đất
+        if(!this.isJumping)
+        {
+            this.isJumping = true
+            this.jumpTime = 0
+            this.startJumpHeight = this.position.current[1]
+        }
     }
 
     update()
@@ -74,13 +99,54 @@ export default class Player
         // Update view
         this.camera.update()
 
-        // Update elevation
-        const chunks = this.state.chunks
-        const elevation = chunks.getElevationForPosition(this.position.current[0], this.position.current[2])
-
-        if(elevation)
-            this.position.current[1] = elevation
+        // Cập nhật logic nhảy
+        if(this.isJumping)
+        {
+            this.wasJumping = true
+            this.jumpTime += this.time.delta
+            
+            if(this.jumpTime < this.jumpDuration)
+            {
+                // Sử dụng hàm sin để tạo hiệu ứng nhảy mượt mà
+                const jumpProgress = this.jumpTime / this.jumpDuration
+                const jumpHeightOffset = Math.sin(jumpProgress * Math.PI) * this.jumpHeight
+                
+                // Update elevation cho phần nhảy
+                const chunks = this.state.chunks
+                const groundElevation = chunks.getElevationForPosition(this.position.current[0], this.position.current[2])
+                
+                if(groundElevation)
+                    this.position.current[1] = groundElevation + jumpHeightOffset
+                else
+                    this.position.current[1] = jumpHeightOffset
+            }
+            else
+            {
+                this.isJumping = false
+                
+                // Phát âm thanh hạ cánh
+                const soundManager = SoundManager.getInstance()
+                if(soundManager) {
+                    soundManager.playSound('land')
+                }
+            }
+        }
         else
-            this.position.current[1] = 0
+        {
+            // Kiểm tra để phát âm thanh hạ cánh
+            if(this.wasJumping)
+            {
+                this.wasJumping = false
+            }
+            
+            // Update elevation khi không nhảy
+            const chunks = this.state.chunks
+            const elevation = chunks.getElevationForPosition(this.position.current[0], this.position.current[2])
+
+            if(elevation)
+                this.position.current[1] = elevation
+            else
+                this.position.current[1] = 0
+        }
     }
 }

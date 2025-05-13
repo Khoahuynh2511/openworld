@@ -7,6 +7,7 @@ import Renderer from './Renderer.js'
 import Sky from './Sky.js'
 import Terrains from './Terrains.js'
 import Water from './Water.js'
+import SoundManager from './SoundManager.js'
 
 import * as THREE from 'three'
 
@@ -37,6 +38,7 @@ export default class View
         this.chunks = new Chunks()
         this.player = new Player()
         this.grass = new Grass()
+        this.soundManager = new SoundManager()
     }
 
     resize()
@@ -57,6 +59,10 @@ export default class View
         this.grass.update()
         this.camera.update()
         this.renderer.update()
+        
+        // Cập nhật âm thanh
+        if(this.soundManager)
+            this.soundManager.update()
     }
 
     destroy()
