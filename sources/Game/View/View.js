@@ -8,6 +8,10 @@ import Sky from './Sky.js'
 import Terrains from './Terrains.js'
 import Water from './Water.js'
 import SoundManager from './SoundManager.js'
+import Trees from './Trees.js'
+
+import State from '@/State/State.js'
+import Game from '@/Game.js'
 
 import * as THREE from 'three'
 
@@ -29,6 +33,16 @@ export default class View
 
         this.scene = new THREE.Scene()
         
+        // Initialize state for lighting
+        this.state = State.getInstance()
+        this.game = Game.getInstance()
+
+        // Basic lighting setup
+        const ambient = new THREE.AmbientLight(0xffffff, 0.6)
+        this.scene.add(ambient)
+        this.directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+        this.scene.add(this.directionalLight)
+        
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.noises = new Noises()
@@ -39,6 +53,7 @@ export default class View
         this.player = new Player()
         this.grass = new Grass()
         this.soundManager = new SoundManager()
+        this.trees = new Trees()
     }
 
     resize()
@@ -57,6 +72,10 @@ export default class View
         this.chunks.update()
         this.player.update()
         this.grass.update()
+        this.trees.update()
+        // Sync directional light with sun
+        const sunPos = this.game.state.sun.position
+        this.directionalLight.position.set(sunPos.x, sunPos.y, sunPos.z)
         this.camera.update()
         this.renderer.update()
         
