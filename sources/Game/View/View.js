@@ -12,9 +12,10 @@ import Trees from './Trees.js'
 
 import State from '@/State/State.js'
 import Game from '@/Game.js'
+import Debug from '@/Debug/Debug.js'
 
 import * as THREE from 'three'
-
+import RainStorm from './Effects/RainStorm/rainstorm.js'
 export default class View
 {
     static instance
@@ -54,7 +55,35 @@ export default class View
         this.grass = new Grass()
         this.soundManager = new SoundManager()
         this.trees = new Trees()
+        this.enableRain = false
+        this.rainEffect = null
+        this.setDebugUI()
+        if (this.enableRain) {
+            this.rainEffect = new RainStorm(this.scene, this.camera.instance)
+        }
     }
+
+    setDebugUI()
+    {
+        const debug = Debug.getInstance()
+        if (!debug.active) return
+
+        const folder = debug.ui.getFolder('View/Weather')
+        folder.add(this, 'enableRain')
+            .name('Enable Rain')
+            .onChange((value) => this.toggleRain(value))
+    }
+
+    toggleRain(enabled) {
+        this.enableRain = enabled
+        if (enabled && !this.rainEffect) {
+            this.rainEffect = new RainStorm(this.scene, this.camera.instance)
+        } else if (!enabled && this.rainEffect) {
+            this.rainEffect.destroy()
+            this.rainEffect = null
+        }
+    }
+
 
     resize()
     {
@@ -82,6 +111,7 @@ export default class View
         // Update sound
         if(this.soundManager)
             this.soundManager.update()
+        if (this.enableRain && this.rainEffect) this.rainEffect.update()
     }
 
     destroy()
