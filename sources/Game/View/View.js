@@ -79,7 +79,7 @@ export default class View
         this.camera.update()
         this.renderer.update()
         
-        // Cập nhật âm thanh
+        // Update sound
         if(this.soundManager)
             this.soundManager.update()
     }

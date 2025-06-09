@@ -27,7 +27,7 @@ export default class SoundManager
         this.state = State.getInstance()
         this.debug = Debug.getInstance()
 
-        // Thiết lập âm thanh
+        // Sound settings
         this.masterVolume = 0.5
         this.isMuted = false
         this.soundsEnabled = true
@@ -36,35 +36,35 @@ export default class SoundManager
         this.listener = new THREE.AudioListener()
         this.audioLoader = new THREE.AudioLoader()
 
-        // Thêm listener vào camera
+        // Add listener to camera
         this.view.camera.instance.add(this.listener)
 
-        // Tải âm thanh
+        // Load sounds
         this.loadSounds()
 
-        // Kết nối sự kiện nhảy
+        // Connect jump event
         this.state.player.controls.events.on('jumpDown', () => {
             this.playSound('jump')
         })
 
-        // Thêm sự kiện phím tắt
+        // Add shortcut event
         window.addEventListener('keydown', (event) => {
-            // Phím M để tắt/bật âm thanh
+            // M key to toggle sound
             if (event.code === 'KeyM') {
                 this.toggleMute()
             }
         })
 
-        // Thêm debug controls
+        // Add debug controls
         this.setDebug()
     }
 
     loadSounds()
     {
-        // Âm thanh nhảy
+        // Jump sound
         this.createSound('jump', '/sounds/jump.mp3', { volume: 0.4 })
         
-        // Âm thanh hạ cánh
+        // Landing sound
         this.createSound('land', '/sounds/land.mp3', { volume: 0.5 })
     }
 
@@ -82,7 +82,7 @@ export default class SoundManager
             }, options)
         }
         
-        // Tải âm thanh
+        // Load sound
         this.audioLoader.load(
             path,
             (buffer) => {
@@ -91,7 +91,7 @@ export default class SoundManager
                 sound.setLoop(this.sounds[name].options.loop)
                 this.sounds[name].loaded = true
                 
-                // Nếu âm thanh cần tự động phát
+                // If sound needs to play automatically
                 if(this.sounds[name].options.autoplay && this.soundsEnabled && !this.isMuted) {
                     sound.play()
                 }
@@ -100,7 +100,7 @@ export default class SoundManager
                 // console.log((xhr.loaded / xhr.total * 100) + '% loaded')
             },
             (error) => {
-                console.error('Không thể tải file âm thanh:', error)
+                console.error('Cannot load sound file:', error)
             }
         )
         
@@ -115,13 +115,13 @@ export default class SoundManager
         const soundFolder = this.debug.ui.getFolder('audio')
         
         soundFolder.add(this, 'masterVolume', 0, 1, 0.01)
-            .name('Âm lượng chính')
+            .name('Master volume')
             .onChange(() => {
                 this.updateAllVolumes()
             })
             
         soundFolder.add(this, 'isMuted')
-            .name('Tắt âm')
+            .name('Mute')
             .onChange((value) => {
                 if(value) {
                     this.muteAll()
@@ -131,13 +131,13 @@ export default class SoundManager
             })
             
         soundFolder.add(this, 'soundsEnabled')
-            .name('Bật âm thanh')
+            .name('Enable sounds')
             
-        // Tạo folder cho từng loại âm thanh
+        // Create folder for each sound type
         const jumpFolder = soundFolder.addFolder('Âm thanh nhảy')
         if(this.sounds.jump) {
             jumpFolder.add(this.sounds.jump.options, 'volume', 0, 1, 0.01)
-                .name('Âm lượng nhảy')
+                .name('Jump volume')
                 .onChange(() => {
                     if(this.sounds.jump.loaded) {
                         this.sounds.jump.sound.setVolume(
@@ -147,10 +147,10 @@ export default class SoundManager
                 })
         }
         
-        const landFolder = soundFolder.addFolder('Âm thanh hạ cánh')
+        const landFolder = soundFolder.addFolder('Landing sound')
         if(this.sounds.land) {
             landFolder.add(this.sounds.land.options, 'volume', 0, 1, 0.01)
-                .name('Âm lượng hạ cánh')
+                .name('Landing volume')
                 .onChange(() => {
                     if(this.sounds.land.loaded) {
                         this.sounds.land.sound.setVolume(
@@ -178,10 +178,10 @@ export default class SoundManager
         
         if(this.isMuted) {
             this.muteAll()
-            console.log('Âm thanh đã tắt. Nhấn M để bật lại.')
+            console.log('Sound is muted. Press M to unmute.')
         } else {
             this.unmuteAll()
-            console.log('Âm thanh đã bật. Nhấn M để tắt.')
+            console.log('Sound is unmuted. Press M to mute.')
         }
     }
 
@@ -214,16 +214,16 @@ export default class SoundManager
         const soundObj = this.sounds[name]
         
         if(!soundObj) {
-            console.warn(`Âm thanh '${name}' không tồn tại`)
+            console.warn(`Sound '${name}' does not exist`)
             return
         }
         
         if(!soundObj.loaded) {
-            console.warn(`Âm thanh '${name}' chưa được tải xong`)
+            console.warn(`Sound '${name}' is not loaded`)
             return
         }
         
-        // Phát âm thanh
+        // Play sound
         if(soundObj.sound.isPlaying) {
             soundObj.sound.stop()
         }
@@ -247,6 +247,6 @@ export default class SoundManager
 
     update()
     {
-        // Có thể thêm logic cập nhật âm thanh 3D theo vị trí nhân vật
+        // Can add 3D sound update logic for player position
     }
 } 

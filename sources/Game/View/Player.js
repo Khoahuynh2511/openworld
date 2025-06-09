@@ -56,13 +56,13 @@ export default class Player
 
     setJumpEffects()
     {
-        // Thêm hiệu ứng cho phần nhảy
+        // Scale animation when jumping
         this.jumpScale = {
             min: 0.9,
             max: 1.15
         }
         
-        // Tạo hiệu ứng bụi khi hạ cánh
+        // Dust effect when landing
         this.dustGeometry = new THREE.CircleGeometry(1, 12)
         this.dustGeometry.rotateX(-Math.PI / 2)
         
@@ -110,19 +110,19 @@ export default class Player
         this.helper.rotation.y = playerState.rotation
         this.helper.material.uniforms.uSunPosition.value.set(sunState.position.x, sunState.position.y, sunState.position.z)
         
-        // Hiệu ứng nhảy
+        // Jump effect
         if(playerState.isJumping)
         {
-            // Scaling animation khi nhảy
+            // Scaling animation when jumping
             const jumpProgress = playerState.jumpTime / playerState.jumpDuration
             const jumpScaleValue = this.jumpScale.min + Math.sin(jumpProgress * Math.PI) * (this.jumpScale.max - this.jumpScale.min)
             
-            // Kéo dài khi bắt đầu nhảy, nén lại khi hạ cánh
+            // Extend when jumping, compress when landing
             this.helper.scale.y = 2 - jumpScaleValue
             this.helper.scale.x = jumpScaleValue
             this.helper.scale.z = jumpScaleValue
             
-            // Thiết lập hiệu ứng bụi khi kết thúc nhảy
+            // Set dust effect when landing
             if(jumpProgress > 0.8 && !this.isShowingDust)
             {
                 this.isShowingDust = true
@@ -130,10 +130,10 @@ export default class Player
         }
         else
         {
-            // Về kích thước bình thường khi không nhảy
+            // Back to normal size when not jumping
             this.helper.scale.set(1, 1, 1)
             
-            // Hiển thị hiệu ứng bụi khi hạ cánh
+            // Show dust effect when landing
             if(this.isShowingDust)
             {
                 this.dustTime += this.state.time.delta

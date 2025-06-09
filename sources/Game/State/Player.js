@@ -19,7 +19,7 @@ export default class Player
         this.inputBoostSpeed = 30
         this.speed = 0
 
-        // Thêm các tham số cho chức năng nhảy
+        // Jump effect
         this.jumpHeight = 5
         this.jumpDuration = 0.6
         this.isJumping = false
@@ -34,7 +34,7 @@ export default class Player
 
         this.camera = new Camera(this)
         
-        // Lắng nghe sự kiện phím nhảy
+        // Listen to jump key
         this.controls.events.on('jumpDown', () => {
             this.jump()
         })
@@ -42,7 +42,7 @@ export default class Player
 
     jump()
     {
-        // Chỉ nhảy khi người chơi đang đứng trên mặt đất
+        // Only jump when player is on the ground
         if(!this.isJumping)
         {
             this.isJumping = true
@@ -99,7 +99,7 @@ export default class Player
         // Update view
         this.camera.update()
 
-        // Cập nhật logic nhảy
+        // Update jump logic
         if(this.isJumping)
         {
             this.wasJumping = true
@@ -107,11 +107,11 @@ export default class Player
             
             if(this.jumpTime < this.jumpDuration)
             {
-                // Sử dụng hàm sin để tạo hiệu ứng nhảy mượt mà
+                // Use sin function to create smooth jump effect
                 const jumpProgress = this.jumpTime / this.jumpDuration
                 const jumpHeightOffset = Math.sin(jumpProgress * Math.PI) * this.jumpHeight
                 
-                // Update elevation cho phần nhảy
+                // Update elevation for the jump
                 const chunks = this.state.chunks
                 const groundElevation = chunks.getElevationForPosition(this.position.current[0], this.position.current[2])
                 
@@ -124,7 +124,7 @@ export default class Player
             {
                 this.isJumping = false
                 
-                // Phát âm thanh hạ cánh
+                // Play landing sound
                 const soundManager = SoundManager.getInstance()
                 if(soundManager) {
                     soundManager.playSound('land')
@@ -133,13 +133,13 @@ export default class Player
         }
         else
         {
-            // Kiểm tra để phát âm thanh hạ cánh
+            // Check to play landing sound
             if(this.wasJumping)
             {
                 this.wasJumping = false
             }
             
-            // Update elevation khi không nhảy
+            // Update elevation when not jumping
             const chunks = this.state.chunks
             const elevation = chunks.getElevationForPosition(this.position.current[0], this.position.current[2])
 
