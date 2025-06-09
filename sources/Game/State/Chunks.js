@@ -263,7 +263,7 @@ export default class Chunks
 
     getChildChunkForPosition(x, z)
     {
-        for(const [key, chunk] of this.mainChunks)
+        for(const [, chunk] of this.mainChunks)
         {
             if(chunk.isInside(x, z))
             {

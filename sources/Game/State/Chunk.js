@@ -286,7 +286,7 @@ export default class Chunk
             if(this.unsplitting)
             {
                 // Destroy chunks
-                for(const [key, chunk] of this.children)
+                for(const [, chunk] of this.children)
                     chunk.destroy()
 
                 this.children.clear()
@@ -309,7 +309,7 @@ export default class Chunk
         if(!this.splitted)
             return this
 
-        for(const [key, chunk] of this.children)
+        for(const [, chunk] of this.children)
         {
             if(chunk.isInside(x, z))
                 return chunk.getChildChunkForPosition(x, z)
