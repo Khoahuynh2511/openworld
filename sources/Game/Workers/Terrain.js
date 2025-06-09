@@ -396,7 +396,6 @@ onmessage = function(event)
 
             // Grass
             const upward = Math.max(0, normal[1])
-            let grass = 0;
 
             if(position[1] > 0)
             {
@@ -406,7 +405,7 @@ onmessage = function(event)
                 
                 const grassUpward = linearStep(0.9, 1, upward);
                 
-                grass = grassNoise * grassUpward
+                // grass = grassNoise * grassUpward
             }
 
             // Final texture

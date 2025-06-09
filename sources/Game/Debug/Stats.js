@@ -65,11 +65,7 @@ export default class Stats
                 const elapsedNanos = this.render.context.getQueryParameter(this.render.query, this.render.context.QUERY_RESULT)
                 const panelValue = Math.min(elapsedNanos / 1000 / 1000, this.max)
 
-                if(panelValue === this.max && this.ignoreMaxed)
-                {
-                    
-                }
-                else
+                if(!(panelValue === this.max && this.ignoreMaxed))
                 {
                     this.render.panel.update(panelValue, this.max)
                 }

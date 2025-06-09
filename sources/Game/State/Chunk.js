@@ -95,7 +95,7 @@ export default class Chunk
                 this.unsplit()
         }
 
-        for(const [key, chunk] of this.children)
+        for(const [, chunk] of this.children)
             chunk.check()
     }
 
@@ -107,7 +107,7 @@ export default class Chunk
             this.terrainNeedsUpdate = false
         }
 
-        for(const [key, chunk] of this.children)
+        for(const [, chunk] of this.children)
             chunk.update()
     }
 
@@ -125,7 +125,7 @@ export default class Chunk
         {
             let chunkReadyCount = 0
 
-            for(const [key, chunk] of this.children)
+            for(const [, chunk] of this.children)
             {
                 if(chunk.ready)
                     chunkReadyCount++
@@ -166,7 +166,7 @@ export default class Chunk
             this.unsplitting = false
 
             // Destroy chunks
-            for(const [key, chunk] of this.children)
+            for(const [, chunk] of this.children)
                 chunk.destroy()
 
             this.children.clear()
@@ -205,7 +205,7 @@ export default class Chunk
         const seChunk = this.chunks.create(this, 'se', this.halfSize, this.x + this.quarterSize, this.z + this.quarterSize, this.depth + 1)
         this.children.set('se', seChunk)
 
-        for(const [key, chunk] of this.children)
+        for(const [, chunk] of this.children)
         {
             chunk.events.on('ready', () =>
             {
@@ -273,7 +273,7 @@ export default class Chunk
 
     destroy()
     {
-        for(const [key, chunk] of this.children)
+        for(const [, chunk] of this.children)
             chunk.off('ready')
 
         if(this.splitted)

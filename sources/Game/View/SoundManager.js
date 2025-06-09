@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import * as dat from 'lil-gui'
 
 import Game from '@/Game.js'
 import View from '@/View/View.js'
@@ -96,8 +95,8 @@ export default class SoundManager
                     sound.play()
                 }
             },
-            (xhr) => {
-                // console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+            () => {
+                // Progress callback
             },
             (error) => {
                 console.error('Cannot load sound file:', error)
@@ -163,7 +162,7 @@ export default class SoundManager
 
     updateAllVolumes()
     {
-        for(const [name, soundObj] of Object.entries(this.sounds)) {
+        for(const [, soundObj] of Object.entries(this.sounds)) {
             if(soundObj.loaded) {
                 soundObj.sound.setVolume(
                     soundObj.options.volume * this.masterVolume
@@ -187,7 +186,7 @@ export default class SoundManager
 
     muteAll()
     {
-        for(const [name, soundObj] of Object.entries(this.sounds)) {
+        for(const [, soundObj] of Object.entries(this.sounds)) {
             if(soundObj.loaded && soundObj.sound.isPlaying) {
                 soundObj.sound.setVolume(0)
             }
@@ -196,7 +195,7 @@ export default class SoundManager
 
     unmuteAll()
     {
-        for(const [name, soundObj] of Object.entries(this.sounds)) {
+        for(const [, soundObj] of Object.entries(this.sounds)) {
             if(soundObj.loaded) {
                 soundObj.sound.setVolume(
                     soundObj.options.volume * this.masterVolume
