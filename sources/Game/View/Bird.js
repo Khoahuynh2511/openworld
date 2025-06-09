@@ -34,7 +34,7 @@ export default class Bird {
             (gltf) => {
                 console.log('[Bird.js] Model loaded successfully:', gltf); 
                 this.model = gltf.scene
-                this.model.scale.set(0.8, 0.8, 0.8)
+                this.model.scale.set(0.5, 0.5, 0.5)
                 this.model.position.copy(this.initialPosition); 
                 this.scene.add(this.model)
                 console.log('[Bird.js] Model added to scene at', this.initialPosition);
@@ -70,6 +70,7 @@ export default class Bird {
                         console.log('[Bird.js] Playing default (first) animation for bird at', this.initialPosition.x.toFixed(2));
                     }
                     const action = this.mixer.clipAction(actionToPlay)
+                    action.timeScale = 10;
                     action.play()
                 } else {
                     console.log('[Bird.js] No animations found in model');
