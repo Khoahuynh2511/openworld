@@ -29,6 +29,9 @@ export default class View
 
         this.scene = new THREE.Scene()
         
+        // Thêm lighting để model GLTF không bị đen
+        this.setupLighting()
+        
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.noises = new Noises()
@@ -39,6 +42,22 @@ export default class View
         this.player = new Player()
         this.grass = new Grass()
         this.soundManager = new SoundManager()
+    }
+
+    setupLighting()
+    {
+        // Ambient light - ánh sáng môi trường để model không bị đen hoàn toàn
+        this.ambientLight = new THREE.AmbientLight('#ffffff', 0.6) // Soft white light
+        this.scene.add(this.ambientLight)
+
+        // Directional light - mô phỏng ánh mặt trời
+        this.directionalLight = new THREE.DirectionalLight('#ffffff', 0.8)
+        this.directionalLight.position.set(-0.5, 1, -0.5) // Tương ứng với uSunPosition
+        this.directionalLight.target.position.set(0, 0, 0)
+        this.scene.add(this.directionalLight)
+        this.scene.add(this.directionalLight.target)
+
+        console.log('✨ Lighting system initialized for GLTF models')
     }
 
     resize()
