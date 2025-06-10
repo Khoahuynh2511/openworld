@@ -36,9 +36,9 @@ export default class CharacterUI
             display: none;
         `
 
-        // Tạo tiêu đề
+        // Create title
         const title = document.createElement('h3')
-        title.textContent = 'Chọn Nhân Vật'
+        title.textContent = 'Select Character'
         title.style.cssText = `
             margin: 0 0 15px 0;
             color: #4ecdc4;
@@ -48,7 +48,7 @@ export default class CharacterUI
         `
         this.container.appendChild(title)
 
-        // Tạo danh sách nhân vật
+        // Create character list
         this.characterList = document.createElement('div')
         this.characterList.style.cssText = `
             display: grid;
@@ -58,7 +58,7 @@ export default class CharacterUI
             overflow-y: auto;
         `
 
-        // Thêm các nút nhân vật
+        // Add character buttons
         const characters = this.player.getAvailableCharacters()
         characters.forEach(character => {
             const button = document.createElement('button')
@@ -97,7 +97,7 @@ export default class CharacterUI
 
         this.container.appendChild(this.characterList)
 
-        // Nút đóng
+        // Close button
         const closeButton = document.createElement('button')
         closeButton.textContent = '✕'
         closeButton.style.cssText = `
@@ -134,10 +134,10 @@ export default class CharacterUI
 
         this.container.appendChild(closeButton)
 
-        // Nút mở UI
+        // UI toggle button
         this.toggleButton = document.createElement('button')
         this.toggleButton.textContent = '👤'
-        this.toggleButton.title = 'Chọn Nhân Vật (phím C)'
+        this.toggleButton.title = 'Select Character (C key)'
         this.toggleButton.style.cssText = `
             position: fixed;
             top: 20px;
@@ -169,14 +169,14 @@ export default class CharacterUI
             this.toggle()
         })
 
-        // Thêm vào DOM
+        // Add to DOM
         document.body.appendChild(this.container)
         document.body.appendChild(this.toggleButton)
     }
 
     setupEventListeners()
     {
-        // Phím tắt C để mở/đóng UI
+        // C key shortcut to open/close UI
         document.addEventListener('keydown', (event) => {
             if (event.code === 'KeyC' && !event.ctrlKey && !event.altKey && !event.shiftKey) {
                 event.preventDefault()
@@ -184,7 +184,7 @@ export default class CharacterUI
             }
         })
 
-        // Đóng UI khi click bên ngoài
+        // Close UI when clicking outside
         document.addEventListener('click', (event) => {
             if (this.isVisible && 
                 !this.container.contains(event.target) && 
@@ -198,24 +198,24 @@ export default class CharacterUI
     {
         try {
             // Show loading
-            this.showNotification(`🔄 Đang tải ${this.getCharacterName(characterId)}...`)
+            this.showNotification(`🔄 Loading ${this.getCharacterName(characterId)}...`)
             
             const success = await this.player.changeCharacter(characterId)
             
             if (success) {
-                console.log(`Đã chuyển sang nhân vật: ${characterId}`)
+                console.log(`Changed to character: ${characterId}`)
                 
-                // Hiệu ứng thông báo
-                this.showNotification(`✅ Đã chọn: ${this.getCharacterName(characterId)}`)
+                // Success notification
+                this.showNotification(`✅ Selected: ${this.getCharacterName(characterId)}`)
                 
-                // Cập nhật UI để highlight nhân vật được chọn
+                // Update UI to highlight selected character
                 this.updateSelection(characterId)
             } else {
-                this.showNotification(`❌ Không thể chọn nhân vật: ${this.getCharacterName(characterId)}`)
+                this.showNotification(`❌ Cannot select character: ${this.getCharacterName(characterId)}`)
             }
         } catch (error) {
             console.error('Error changing character:', error)
-            this.showNotification(`❌ Lỗi khi tải nhân vật: ${this.getCharacterName(characterId)}`)
+            this.showNotification(`❌ Error loading character: ${this.getCharacterName(characterId)}`)
         }
     }
 

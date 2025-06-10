@@ -55,17 +55,17 @@ export default class Player
 
     async createCharacterMesh()
     {
-        // Xóa mesh cũ nếu có
+        // Remove old mesh if exists
         if (this.helper) {
             this.group.remove(this.helper)
             if (this.helper.geometry) this.helper.geometry.dispose()
             if (this.helper.material) this.helper.material.dispose()
         }
 
-        // Lấy dữ liệu nhân vật hiện tại
+        // Get current character data
         const characterData = this.characterManager.getCharacterData()
         
-        // Kiểm tra nếu là model (online hoặc local)
+        // Check if it's a model (online or local)
         if (characterData.isOnlineModel || characterData.isLocalModel) {
             try {
                 console.log(`🔄 Loading model: ${characterData.name}`)
@@ -76,10 +76,10 @@ export default class Player
                     color: characterData.color
                 })
                 
-                // Tăng timeout cho model lớn như Jaekelopterus
+                // Increase timeout for large models like Jaekelopterus
                 const timeoutDuration = characterData.modelPath?.includes('Jaekelopterus') ? 15000 : 8000
                 
-                // Race between model loading và timeout
+                // Race between model loading and timeout
                 const timeoutPromise = new Promise((_, reject) => {
                     setTimeout(() => reject(new Error(`Timeout after ${timeoutDuration}ms`)), timeoutDuration)
                 })
@@ -101,7 +101,7 @@ export default class Player
                 }
                 
                 if (modelResult && modelResult.isModel) {
-                    // Sử dụng model 3D
+                    // Use 3D model
                     this.helper = modelResult.object
                     this.helper.scale.set(characterData.scale.x, characterData.scale.y, characterData.scale.z)
                     
@@ -111,7 +111,7 @@ export default class Player
                     // Debug preserveOriginalColor flag
                     console.log(`🎨 preserveOriginalColor flag:`, characterData.preserveOriginalColor)
                     
-                    // Traverse qua tất cả mesh để apply màu (optional)
+                    // Traverse through all meshes to apply color (optional)
                     if (!characterData.preserveOriginalColor) {
                         try {
                             console.log(`🎨 Applying custom color: ${characterData.color}`)
@@ -119,13 +119,13 @@ export default class Player
                                 if (child.isMesh && child.material) {
                                     console.log(`🎨 Applying color to mesh: ${child.name || 'unnamed'}`)
                                     
-                                    // Tạo material mới với màu đã chọn thay vì chỉ set color
+                                    // Create new material with selected color instead of just setting color
                                     const newMaterial = new THREE.MeshLambertMaterial({
                                         color: characterData.color,
                                         transparent: false
                                     })
                                     
-                                    // Nếu material cũ có texture, sao chép texture
+                                    // If old material has texture, copy texture
                                     if (Array.isArray(child.material)) {
                                         child.material = child.material.map(mat => {
                                             const newMat = newMaterial.clone()
@@ -159,19 +159,19 @@ export default class Player
                     stack: error.stack,
                     modelPath: characterData.modelPath
                 })
-                // Fallback sẽ được thực hiện ở dưới
+                // Fallback will be executed below
             }
         }
         
-        // Fallback: Tạo mesh từ geometry
+        // Fallback: Create mesh from geometry
         let geometry
         
-        // Nếu là model (online/local) và có fallback geometry, dùng fallback
+        // If it's a model (online/local) and has fallback geometry, use fallback
         if ((characterData.isOnlineModel || characterData.isLocalModel) && characterData.fallbackGeometry) {
             console.log(`🔄 Using fallback geometry for: ${characterData.name}`)
             geometry = characterData.fallbackGeometry()
         } else if (characterData.geometry) {
-            // Dùng geometry thông thường
+            // Use standard geometry
             geometry = characterData.geometry()
         } else {
             // Default fallback
@@ -180,11 +180,11 @@ export default class Player
             geometry.translate(0, 0.9, 0)
         }
         
-        // Kiểm tra nếu geometry trả về là Group (như Son Goku mới)
+        // Check if geometry returns a Group (like new Son Goku)
         if (geometry instanceof THREE.Group) {
             this.helper = geometry
         } else {
-            // Geometry thông thường
+            // Standard geometry
             this.helper = new THREE.Mesh()
             this.helper.material = new PlayerMaterial()
             this.helper.material.uniforms.uColor.value = new THREE.Color(characterData.color)
@@ -199,13 +199,13 @@ export default class Player
     async changeCharacter(characterType)
     {
         if (this.characterManager.setCharacterType(characterType)) {
-            // Xóa hiệu ứng cũ
+            // Remove old effects
             this.characterEffects.removeAllEffects(this.helper)
             
-            // Tạo mesh mới (async)
+            // Create new mesh (async)
             await this.createCharacterMesh()
             
-            // Thêm hiệu ứng cho nhân vật đặc biệt
+            // Add effects for special characters
             this.characterEffects.addAura(this.helper, characterType)
             
             return true
@@ -225,13 +225,13 @@ export default class Player
 
     setJumpEffects()
     {
-        // Thêm hiệu ứng cho phần nhảy
+        // Add effects for jumping
         this.jumpScale = {
             min: 0.9,
             max: 1.15
         }
         
-        // Tạo hiệu ứng bụi khi hạ cánh
+        // Create dust effect when landing
         this.dustGeometry = new THREE.CircleGeometry(1, 12)
         this.dustGeometry.rotateX(-Math.PI / 2)
         

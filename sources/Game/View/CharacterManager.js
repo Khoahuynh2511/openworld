@@ -14,7 +14,7 @@ export default class CharacterManager
     {
         return {
             default: {
-                name: 'Nhân Vật Mặc Định',
+                name: 'Default Character',
                 geometry: () => {
                     const geometry = new THREE.CapsuleGeometry(0.5, 0.8, 3, 16)
                     geometry.translate(0, 0.9, 0)
@@ -55,7 +55,7 @@ export default class CharacterManager
             },
 
             wacky_ufo: {
-                name: 'UFO Kỳ Lạ',
+                name: 'Wacky UFO',
                 isLocalModel: true,
                 modelPath: '/models/Wacky UFO.glb',
                 color: '#9c27b0',
@@ -70,7 +70,7 @@ export default class CharacterManager
             },
 
             birdy: {
-                name: 'Hình Nhân',
+                name: 'Birdy Character',
                 isLocalModel: true,
                 modelPath: '/models/Birdy.glb',
                 color: '#ff9800',
@@ -85,7 +85,7 @@ export default class CharacterManager
             },
 
             sitting_alien: {
-                name: 'Người Ngoài Hành Tinh',
+                name: 'Sitting Alien',
                 isLocalModel: true,
                 modelPath: '/models/Sitting Alien.glb',
                 color: '#4caf50',
@@ -99,22 +99,8 @@ export default class CharacterManager
                 }
             },
 
-            reaper: {
-                name: 'Thần Chết',
-                isLocalModel: true,
-                modelPath: '/models/Reaper.glb',
-                color: '#424242',
-                scale: { x: 1.0, y: 1.0, z: 1.0 },
-                preserveOriginalColor: true,
-                rotationOffset: Math.PI,
-                fallbackGeometry: () => {
-                    const geometry = new THREE.ConeGeometry(0.6, 1.8, 8)
-                    geometry.translate(0, 1.0, 0)
-                    return geometry
-                }
-            },
 
-            // Models online từ Three.js examples
+            // Online models from Three.js examples
             robot_expressive: {
                 name: 'Robot',
                 isOnlineModel: true,
