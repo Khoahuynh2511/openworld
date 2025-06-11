@@ -125,7 +125,7 @@ export default class Controls
         this.pointer.deltaTemp = { x: 0, y: 0 }
         this.pointer.delta = { x: 0, y: 0 }
 
-        window.addEventListener('pointerdown', (event) =>
+        window.addEventListener('pointerdown', () =>
         {
             this.pointer.down = true
         })

@@ -7,7 +7,7 @@ import State from '@/State/State.js'
 
 export default class Renderer
 {
-    constructor(_options = {})
+    constructor()
     {
         this.game = Game.getInstance()
         this.view = View.getInstance()

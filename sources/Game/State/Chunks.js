@@ -1,5 +1,5 @@
 import EventsEmitter from 'events'
-import { vec2 } from 'gl-matrix'
+
 
 import State from '@/State/State.js'
 import Chunk from './Chunk.js'
@@ -27,7 +27,7 @@ export default class Chunks
     check()
     {
         // Set all children flag for check
-        for(const [key, chunk] of this.allChunks)
+        for(const [, chunk] of this.allChunks)
             chunk.needsCheck = true
 
         // Get the coordinates to main chunks around the player
@@ -54,7 +54,7 @@ export default class Chunks
         }
         
         // Check chunks
-        for(const [ key, chunk ] of this.mainChunks)
+        for(const [, chunk] of this.mainChunks)
             chunk.check()
 
         // Update neighbours
@@ -74,7 +74,7 @@ export default class Chunks
         }
         
         // Update main chunks
-        for(const [ key, chunk ] of this.mainChunks)
+        for(const [, chunk] of this.mainChunks)
             chunk.update()
     }
 
@@ -263,7 +263,7 @@ export default class Chunks
 
     getChildChunkForPosition(x, z)
     {
-        for(const [key, chunk] of this.mainChunks)
+        for(const [, chunk] of this.mainChunks)
         {
             if(chunk.isInside(x, z))
             {

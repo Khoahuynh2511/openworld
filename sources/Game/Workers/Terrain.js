@@ -3,10 +3,11 @@ import { vec3 } from 'gl-matrix'
 
 let elevationRandom = null
 
-const linearStep = (edgeMin, edgeMax, value) =>
-{
-    return Math.max(0.0, Math.min(1.0, (value - edgeMin) / (edgeMax - edgeMin)))
-}
+// Unused function
+// const linearStep = (edgeMin, edgeMax, value) =>
+// {
+//     return Math.max(0.0, Math.min(1.0, (value - edgeMin) / (edgeMax - edgeMin)))
+// }
 
 const getElevation = (x, y, lacunarity, persistence, iterations, baseFrequency, baseAmplitude, power, elevationOffset, iterationsOffsets) =>
 {
@@ -52,7 +53,8 @@ onmessage = function(event)
     
     const segments = subdivisions + 1
     elevationRandom = new SimplexNoise(seed)
-    const grassRandom = new SimplexNoise(seed)
+    // Unused random generator 
+    // const grassRandom = new SimplexNoise(seed)
 
     /**
      * Elevation
@@ -388,25 +390,11 @@ onmessage = function(event)
 
             // Normal
             const iNormalStride = (iZ * segments + iX) * 3
-            const normal = vec3.fromValues(
-                normals[iNormalStride    ],
-                normals[iNormalStride + 1],
-                normals[iNormalStride + 2]
-            )
-
-            // Grass
-            const upward = Math.max(0, normal[1])
-            let grass = 0;
-
+            
+            // Grass section simplified - removed unused variables and code
             if(position[1] > 0)
             {
-                const grassFrequency = 0.05
-                let grassNoise = grassRandom.noise2D(position[0] * grassFrequency + iterationsOffsets[0][0], position[2] * grassFrequency + iterationsOffsets[0][0])
-                grassNoise = linearStep(- 0.5, 0, grassNoise);
-                
-                const grassUpward = linearStep(0.9, 1, upward);
-                
-                grass = grassNoise * grassUpward
+                // All grass-related code was removed as it was unused
             }
 
             // Final texture

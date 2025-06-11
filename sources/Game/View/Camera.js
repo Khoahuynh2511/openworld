@@ -5,7 +5,7 @@ import State from '@/State/State.js'
 
 export default class Camera
 {
-    constructor(_options)
+    constructor()
     {
         // Options
         this.state = State.getInstance()

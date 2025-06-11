@@ -128,7 +128,7 @@ export default class Terrains
 
     recreate()
     {
-        for(const [key, terrain] of this.terrains)
+        for(const [, terrain] of this.terrains)
         {
             // this.create(terrain.size, terrain.x, terrain.z)
             
