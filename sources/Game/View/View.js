@@ -337,7 +337,9 @@ export default class View
             // Save to localStorage
             try {
                 localStorage.setItem('globalAnimalSound', JSON.stringify(value))
-            } catch (e) {}
+            } catch (e) {
+                console.error('Error saving animal sound state to localStorage:', e)
+            }
             // Reload the page to apply changes
             window.location.reload()
         })
