@@ -72,7 +72,6 @@ export default class View
         const stateTerrains = game.state.terrains
         this.debug = game.debug;
 
-        // Đọc trạng thái sound từ localStorage nếu có
         let globalSound = false;
         try {
             const stored = localStorage.getItem('globalAnimalSound');
@@ -105,11 +104,14 @@ export default class View
         this.directionalLight = new THREE.DirectionalLight(0xffffff, 1)
         this.scene.add(this.directionalLight)
         
+        // Add lighting to GLTF models
+        this.setupLighting()
+        
         this.camera = new Camera()
         this.audioListener = new THREE.AudioListener();
         this.camera.instance.add(this.audioListener);
 
-        // Đảm bảo resume audio context khi có tương tác người dùng đầu tiên
+        // Ensure audio context resumes when user interacts for the first time
         const tryResumeAudio = () => {
             if (this.audioListener && this.audioListener.context && this.audioListener.context.state === 'suspended') {
                 this.audioListener.context.resume();
@@ -131,7 +133,7 @@ export default class View
         this.enableRain = false
         this.rainEffect = null
 
-        // Animal config state (phải đặt trước khi spawn động vật)
+        // Animal config state (must be set before spawning animals)
         this.animalConfig = {
             spawnRange: {
                 cow: 100,
@@ -232,6 +234,22 @@ export default class View
         }
     }
 
+    setupLighting()
+    {
+        // Ambient light - soft white light to prevent models from being completely black
+        this.ambientLight = new THREE.AmbientLight('#ffffff', 0.6) // Soft white light
+        this.scene.add(this.ambientLight)
+
+        // Directional light - simulate sun light
+        this.directionalLight = new THREE.DirectionalLight('#ffffff', 0.8)
+        this.directionalLight.position.set(-0.5, 1, -0.5) // Corresponds to uSunPosition
+        this.directionalLight.target.position.set(0, 0, 0)
+        this.scene.add(this.directionalLight)
+        this.scene.add(this.directionalLight.target)
+
+        console.log('✨ Lighting system initialized for GLTF models')
+    }
+
     resize()
     {
         this.camera.resize()
@@ -324,11 +342,11 @@ export default class View
             this.animalConfig.sound.wolf = value;
             this.animalConfig.sound.stag = value;
             this.animalConfig.sound.horse = value;
-            // Lưu vào localStorage
+            // Save to localStorage
             try {
                 localStorage.setItem('globalAnimalSound', JSON.stringify(value));
             } catch (e) {}
-            // Reload the page
+            // Reload the page to apply changes
             window.location.reload();
         });
     }
@@ -415,7 +433,7 @@ export default class View
             if (cow.model) cow.model.scale.setScalar(this.animalConfig.scale.cow);
             this.cows.push(cow);
         }
-        // Birds (không kiểm tra độ phẳng)
+        // Birds (no flatness check)
         for (let i = 0; i < this.animalConfig.number.bird; i++) {
             const range = this.animalConfig.spawnRange.bird;
             let x, z, y;
