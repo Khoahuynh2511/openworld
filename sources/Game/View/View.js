@@ -23,35 +23,23 @@ import Debug from '@/Debug/Debug.js'
 import * as THREE from 'three'
 import RainStorm from './Effects/RainStorm/rainstorm.js'
 
-const MAX_SPAWN_ATTEMPTS_PER_ANIMAL = 20; // Max attempts to find a flat spot
-
-// Default flatness parameters (smaller animals)
-const DEFAULT_FLATNESS_CHECK_DISTANCE = 1.5;
-const DEFAULT_MAX_ELEVATION_DIFFERENCE = 1.0;
+const MAX_SPAWN_ATTEMPTS_PER_ANIMAL = 20 // Max attempts to find a flat spot
 
 // Cow-specific flatness parameters
-const COW_FLATNESS_CHECK_DISTANCE = 3; // Wider check area for cows
-const COW_MAX_ELEVATION_DIFFERENCE = 0.8;  // Stricter elevation diff for cows
+const COW_FLATNESS_CHECK_DISTANCE = 3 // Wider check area for cows
+const COW_MAX_ELEVATION_DIFFERENCE = 0.8  // Stricter elevation diff for cows
 
 // Panther-specific flatness parameters
-const PANTHER_FLATNESS_CHECK_DISTANCE = 3;
-const PANTHER_MAX_ELEVATION_DIFFERENCE = 0.8;
-
-// Deer-specific flatness parameters
-const DEER_FLATNESS_CHECK_DISTANCE = 3;
-const DEER_MAX_ELEVATION_DIFFERENCE = 0.8;
-
-// Sheep-specific flatness parameters
-const SHEEP_FLATNESS_CHECK_DISTANCE = 2.5;
-const SHEEP_MAX_ELEVATION_DIFFERENCE = 0.8;
+const PANTHER_FLATNESS_CHECK_DISTANCE = 3
+const PANTHER_MAX_ELEVATION_DIFFERENCE = 0.8
 
 // Stag-specific flatness parameters
-const STAG_FLATNESS_CHECK_DISTANCE = 3;
-const STAG_MAX_ELEVATION_DIFFERENCE = 0.8;
+const STAG_FLATNESS_CHECK_DISTANCE = 3
+const STAG_MAX_ELEVATION_DIFFERENCE = 0.8
 
 // Horse-specific flatness parameters
-const HORSE_FLATNESS_CHECK_DISTANCE = 2.5;
-const HORSE_MAX_ELEVATION_DIFFERENCE = 0.8;
+const HORSE_FLATNESS_CHECK_DISTANCE = 2.5
+const HORSE_MAX_ELEVATION_DIFFERENCE = 0.8
 
 export default class View
 {
@@ -70,13 +58,16 @@ export default class View
         View.instance = this
         const game = Game.getInstance()
         const stateTerrains = game.state.terrains
-        this.debug = game.debug;
+        this.debug = game.debug
 
-        let globalSound = false;
+        let globalSound = false
+
         try {
-            const stored = localStorage.getItem('globalAnimalSound');
-            if (stored !== null) globalSound = JSON.parse(stored);
-        } catch (e) {}
+            const stored = localStorage.getItem('globalAnimalSound')
+            if (stored !== null) globalSound = JSON.parse(stored)
+        } catch (e) {
+            // ignore localStorage errors
+        }
 
         this.terrainHelper = new TerrainHelper({
             seed: stateTerrains.seed,
@@ -88,11 +79,11 @@ export default class View
             power: stateTerrains.power,
             elevationOffset: stateTerrains.elevationOffset,
             iterationsOffsets: stateTerrains.iterationsOffsets
-        });
+        })
 
         this.scene = new THREE.Scene()
-        this.scene.userData.terrainHelper = this.terrainHelper;
-        this.scene.userData.elevationIterations = stateTerrains.maxIterations;
+        this.scene.userData.terrainHelper = this.terrainHelper
+        this.scene.userData.elevationIterations = stateTerrains.maxIterations
         
         // Initialize state for lighting
         this.state = State.getInstance()
@@ -108,17 +99,17 @@ export default class View
         this.setupLighting()
         
         this.camera = new Camera()
-        this.audioListener = new THREE.AudioListener();
-        this.camera.instance.add(this.audioListener);
+        this.audioListener = new THREE.AudioListener()
+        this.camera.instance.add(this.audioListener)
 
         // Ensure audio context resumes when user interacts for the first time
         const tryResumeAudio = () => {
             if (this.audioListener && this.audioListener.context && this.audioListener.context.state === 'suspended') {
-                this.audioListener.context.resume();
+                this.audioListener.context.resume()
             }
-        };
-        window.addEventListener('pointerdown', tryResumeAudio, { once: true });
-        window.addEventListener('keydown', tryResumeAudio, { once: true });
+        }
+        window.addEventListener('pointerdown', tryResumeAudio, { once: true })
+        window.addEventListener('keydown', tryResumeAudio, { once: true })
 
         this.renderer = new Renderer()
         this.noises = new Noises()
@@ -163,25 +154,25 @@ export default class View
                 stag: globalSound,
                 horse: globalSound,
             }
-        };
+        }
 
-        this.cows = [];
-        this.birds = [];
-        this.blackPanthers = [];
-        this.deers = [];
-        this.sheeps = [];
+        this.cows = []
+        this.birds = []
+        this.blackPanthers = []
+        this.deers = []
+        this.sheeps = []
 
         // Spawn all animals according to config
-        this.spawnAnimalsByConfig();
+        this.spawnAnimalsByConfig()
 
         if (this.debug && this.debug.active) {
-            this.setDebug();
-            this.setDebugUI();
+            this.setDebug()
+            this.setDebugUI()
         }
     }
 
     isPositionSuitable(x, z, elevationIterations, flatnessCheckDistance, maxElevationDifference) {
-        const centerElevation = this.terrainHelper.getElevation(x, z, elevationIterations);
+        const centerElevation = this.terrainHelper.getElevation(x, z, elevationIterations)
 
         const pointsToSample = [
             { dx: flatnessCheckDistance, dz: 0 },
@@ -300,6 +291,7 @@ export default class View
 
     destroy()
     {
+        // No cleanup required
     }
 
     setDebug() {
