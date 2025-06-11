@@ -24,35 +24,6 @@ export default class CharacterManager
                 scale: { x: 1, y: 1, z: 1 }
             },
 
-            jaekelopterus: {
-                name: 'Jaekelopterus',
-                isLocalModel: true,
-                modelPath: '/models/Jaekelopterus.glb',
-                color: '#2d3748',
-                scale: { x: 1.2, y: 1.2, z: 1.2 },
-                preserveOriginalColor: true,
-                rotationOffset: Math.PI,
-                fallbackGeometry: () => {
-                    const geometry = new THREE.CapsuleGeometry(0.6, 1.0, 4, 16)
-                    geometry.translate(0, 1.0, 0)
-                    return geometry
-                }
-            },
-
-            retro_ufo: {
-                name: 'UFO Retro',
-                isLocalModel: true,
-                modelPath: '/models/Retro UFO.glb',
-                color: '#00bcd4',
-                scale: { x: 0.8, y: 0.8, z: 0.8 },
-                preserveOriginalColor: true,
-                rotationOffset: 0,
-                fallbackGeometry: () => {
-                    const geometry = new THREE.CylinderGeometry(0.8, 0.5, 0.3, 16)
-                    geometry.translate(0, 0.6, 0)
-                    return geometry
-                }
-            },
 
             wacky_ufo: {
                 name: 'Wacky UFO',
@@ -80,21 +51,6 @@ export default class CharacterManager
                 fallbackGeometry: () => {
                     const geometry = new THREE.SphereGeometry(0.4, 12, 8)
                     geometry.translate(0, 0.5, 0)
-                    return geometry
-                }
-            },
-
-            sitting_alien: {
-                name: 'Sitting Alien',
-                isLocalModel: true,
-                modelPath: '/models/Sitting Alien.glb',
-                color: '#4caf50',
-                scale: { x: 1.2, y: 1.2, z: 1.2 },
-                preserveOriginalColor: true,
-                rotationOffset: Math.PI,
-                fallbackGeometry: () => {
-                    const geometry = new THREE.CapsuleGeometry(0.5, 0.8, 4, 16)
-                    geometry.translate(0, 0.9, 0)
                     return geometry
                 }
             },
